@@ -18,13 +18,13 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.pipeline import Pipeline
 from tpot import TPOTClassifier
-from settings import DATADIR, LOGGING_CONFIG
+from settings import DATADIR
 
 # Setup pipeline logging
 
 # Setup pipeline logging
 
-logging.config.fileConfig(LOGGING_CONFIG)
+logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('pipeline')
 
 TAXONS = os.path.join(DATADIR, 'clean_taxons.csv')
