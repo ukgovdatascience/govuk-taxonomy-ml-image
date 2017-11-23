@@ -1,7 +1,7 @@
 #!/bin/bash
-ENV=./.env-remote
+ENV=./.env
 
 docker run -i --rm \
     --env-file $ENV \
-    -v $DATADIR:/mnt/DATA \
-    ukgovdatascience/govuk-word-embedding:latest python TPOT_allgovuk.py
+    -v $DATADIR:/mnt/data \
+    ukgovdatascience/govuk-taxonomy-ml-image:latest python TPOT_allgovuk.py
