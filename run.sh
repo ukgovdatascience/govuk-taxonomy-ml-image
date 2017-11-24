@@ -1,7 +1,11 @@
 #!/bin/bash
-ENV=./.env
+#ENV=./.env
+
+#docker run -i --rm \
+#    --env-file $ENV \
+#    -v $LOCALDATADIR:$DOCKERDATADIR \
+#    ukgovdatascience/govuk-taxonomy-ml-image:latest python TPOT_allgovuk.py
 
 docker run -i --rm \
-    --env-file $ENV \
-    -v $DATADIR:/mnt/data \
+    -v /data:/mnt/data \
     ukgovdatascience/govuk-taxonomy-ml-image:latest python TPOT_allgovuk.py

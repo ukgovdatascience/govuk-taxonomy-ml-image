@@ -1,13 +1,6 @@
-
 # coding: utf-8
-
-# # Automated algorithm selection using TPOT for GOVUK tagging
-
-# ### Load requirements and data
-
-# In[1]:
-
-
+"""Automated algorithm selection using TPOT for GOVUK tagging
+"""
 import pandas as pd
 import numpy as np
 import os
@@ -18,17 +11,15 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.pipeline import Pipeline
 from tpot import TPOTClassifier
-from settings import DATADIR
 
 # Setup pipeline logging
 
-# Setup pipeline logging
-
-logging.config.fileConfig('logging.conf')
+DOCKERDATADIR = '/mnt/data'
+logging.config.fileConfig('./logging.conf')
 logger = logging.getLogger('pipeline')
 
-TAXONS = os.path.join(DATADIR, 'clean_taxons.csv')
-CONTENT = os.path.join(DATADIR, 'clean_content.csv.gz')
+TAXONS = os.path.join(DOCKERDATADIR, 'clean_taxons.csv')
+CONTENT = os.path.join(DOCKERDATADIR, 'clean_content.csv.gz')
 
 logger.info('Loading taxons')
 taxons = pd.read_csv(TAXONS)
@@ -137,7 +128,7 @@ logger.info("Creating train/test split")
 X_train, X_test, y_train, y_test = train_test_split(
     X, content_taxons['level2taxoncat'], test_size = 0.2, random_state=1337)
 
-tpot = TPOTClassifier(generations=5, population_size=50, verbosity=2, config_dict="TPOT sparse")
+tpot = TPOTClassifier(generations=1, population_size=10, verbosity=2, config_dict="TPOT sparse")
 
 logger.info("Initialising T-POT with the following parameters: %s", tpot)
 logger.info("Running TPOT...")
