@@ -11,6 +11,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.pipeline import Pipeline
 from tpot import TPOTClassifier
+from datetime import datetime
 
 # Load env vars
 
@@ -29,7 +30,8 @@ TPOT_SUBSAMPLE = float(os.getenv('TPOT_SUBSAMPLE'))
 # file locations
 
 DOCKERDATADIR = os.getenv('DOCKERDATADIR')
-PIPELINEFILE = os.path.join(DOCKERDATADIR, 'tpot_pipeline.py')
+NOW = "{}_pipeline.py".format(datetime.now().strftime('%Y%m%d%H%M%S'))
+PIPELINEFILE = os.path.join(DOCKERDATADIR, NOW)
 
 # Setup pipeline logging
 
@@ -155,7 +157,7 @@ logger.info("Running TPOT...")
 
 tpot.fit(X_train, y_train)
 
-logger.info("Writing pipeline to tpot_pipeline.py")
+logger.info("Writing pipeline to %s", PIPELINEFILE)
 tpot.export(PIPELINEFILE)
 logger.info("...TPOT run completed")
 logger.info("TPOT score: %s", tpot.score(X_test, y_test))
