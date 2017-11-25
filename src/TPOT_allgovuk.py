@@ -12,9 +12,17 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.pipeline import Pipeline
 from tpot import TPOTClassifier
 
+# Load env vars
+
+CV = os.getenv('CV')
+GENERATIONS = os.getenv('GENERATIONS')
+POPULATIONSIZE=os.getenv('POPULATIONSIZE')
+DOCKERDATADIR = os.getenv('DOCKERDATADIR')
+RANDOMSTATE = os.getenv('RANDOMSTATE')
+TESTSIZE = os.getenv('TESTSIZE')
+
 # Setup pipeline logging
 
-DOCKERDATADIR = '/mnt/data'
 logging.config.fileConfig('./logging.conf')
 logger = logging.getLogger('pipeline')
 
@@ -126,17 +134,18 @@ logger.info("Output dataset X has shape: %s", X.shape)
 logger.info("Creating train/test split")
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, content_taxons['level2taxoncat'], test_size = 0.2, random_state=1337)
+    X, content_taxons['level2taxoncat'], test_size = TESTSIZE, random_state=1337)
 
-tpot = TPOTClassifier(generations=1, population_size=10, verbosity=2, config_dict="TPOT sparse")
+tpot = TPOTClassifier(generations=GENERATIONS, population_size=POPULATIONSIZE, verbosity=2, config_dict="TPOT sparse", random_state=RANDOMSTATE, cv=CV)
 
 logger.info("Initialising T-POT with the following parameters: %s", tpot)
 logger.info("Running TPOT...")
 
 tpot.fit(X_train, y_train)
 
+logger.info("Writing pipeline to tpot_pipeline.py")
+tpot.export('/mnt/data/tpot_pipeline.py')
 logger.info("...TPOT run completed")
 logger.info("TPOT score: %s", tpot.score(X_test, y_test))
 
-logger.info("Writing pipeline to tpot_pipeline.py")
-tpot.export('tpot_pipeline.py')
+tpot.export('/mnt/data/tpot_pipeline.py')
