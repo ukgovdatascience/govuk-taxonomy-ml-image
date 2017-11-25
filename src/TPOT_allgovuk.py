@@ -16,13 +16,13 @@ from tpot import TPOTClassifier
 
 # TPOT vars
 
-TPOT_CV = os.getenv('TPOT_CV')
-TPOT_GENERATIONS = os.getenv('TPOT_GENERATIONS')
-TPOT_POPULATIONSIZE=os.getenv('TPOT_POPULATIONSIZE')
-TPOT_RANDOMSTATE = os.getenv('TPOT_RANDOMSTATE')
-TPOT_TESTSIZE = os.getenv('TPOT_TESTSIZE')
-TPOT_NUMJOBS = os.getenv('TPOT_NUMJOBS')
-TPOT_VERBOSITY= os.getenv('TPOT_VERBOSITY')
+TPOT_CV = int(os.getenv('TPOT_CV'))
+TPOT_GENERATIONS = int(os.getenv('TPOT_GENERATIONS'))
+TPOT_POPULATIONSIZE = int(os.getenv('TPOT_POPULATIONSIZE'))
+TPOT_RANDOMSTATE = int(os.getenv('TPOT_RANDOMSTATE'))
+TPOT_TESTSIZE = float(os.getenv('TPOT_TESTSIZE'))
+TPOT_NUMJOBS = int(os.getenv('TPOT_NUMJOBS'))
+TPOT_VERBOSITY= int(os.getenv('TPOT_VERBOSITY'))
 TPOT_MEMORY = str(os.getenv('TPOT_MEMORY'))
 
 # file locations
