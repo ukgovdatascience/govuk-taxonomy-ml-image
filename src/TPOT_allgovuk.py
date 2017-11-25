@@ -16,12 +16,14 @@ from tpot import TPOTClassifier
 
 # TPOT vars
 
-CV = os.getenv('CV')
-GENERATIONS = os.getenv('GENERATIONS')
-POPULATIONSIZE=os.getenv('POPULATIONSIZE')
-DOCKERDATADIR = os.getenv('DOCKERDATADIR')
-RANDOMSTATE = os.getenv('RANDOMSTATE')
-TESTSIZE = os.getenv('TESTSIZE')
+TPOT_CV = os.getenv('TPOT_CV')
+TPOT_GENERATIONS = os.getenv('TPOT_GENERATIONS')
+TPOT_POPULATIONSIZE=os.getenv('TPOT_POPULATIONSIZE')
+TPOT_RANDOMSTATE = os.getenv('TPOT_RANDOMSTATE')
+TPOT_TESTSIZE = os.getenv('TPOT_TESTSIZE')
+TPOT_NUMJOBS = os.getenv('TPOT_NUMJOBS')
+TPOT_VERBOSITY= os.getenv('TPOT_VERBOSITY')
+TPOT_MEMORY = str(os.getenv('TPOT_MEMORY'))
 
 # file locations
 
@@ -141,9 +143,9 @@ logger.info("Output dataset X has shape: %s", X.shape)
 logger.info("Creating train/test split")
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, content_taxons['level2taxoncat'], test_size = TESTSIZE, random_state=1337)
+    X, content_taxons['level2taxoncat'], test_size = TPOT_TESTSIZE, random_state=1337)
 
-tpot = TPOTClassifier(generations=GENERATIONS, population_size=POPULATIONSIZE, verbosity=2, config_dict="TPOT sparse", random_state=RANDOMSTATE, cv=CV, periodic_checkpoint_folder=DATADIR)
+tpot = TPOTClassifier(generations=TPOT_GENERATIONS, population_size=TPOT_POPULATIONSIZE, verbosity=TPOT_VERBOSITY, config_dict="TPOT sparse", random_state=TPOT_RANDOMSTATE, cv=TPOT_CV, periodic_checkpoint_folder=DATADIR, n_jobs=TPOT_NUMJOBS, memory=TPOT_MEMORY)
 
 logger.info("Initialising T-POT with the following parameters: %s", tpot)
 logger.info("Running TPOT...")
