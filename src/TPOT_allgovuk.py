@@ -14,12 +14,19 @@ from tpot import TPOTClassifier
 
 # Load env vars
 
+# TPOT vars
+
 CV = os.getenv('CV')
 GENERATIONS = os.getenv('GENERATIONS')
 POPULATIONSIZE=os.getenv('POPULATIONSIZE')
 DOCKERDATADIR = os.getenv('DOCKERDATADIR')
 RANDOMSTATE = os.getenv('RANDOMSTATE')
 TESTSIZE = os.getenv('TESTSIZE')
+
+# file locations
+
+DOCKERDATADIR = os.getenv('DOCKERDATADIR')
+PIPELINEFILE = os.path.join(DOCKERDATADIR, 'tpot_pipeline.py')
 
 # Setup pipeline logging
 
@@ -136,7 +143,7 @@ logger.info("Creating train/test split")
 X_train, X_test, y_train, y_test = train_test_split(
     X, content_taxons['level2taxoncat'], test_size = TESTSIZE, random_state=1337)
 
-tpot = TPOTClassifier(generations=GENERATIONS, population_size=POPULATIONSIZE, verbosity=2, config_dict="TPOT sparse", random_state=RANDOMSTATE, cv=CV)
+tpot = TPOTClassifier(generations=GENERATIONS, population_size=POPULATIONSIZE, verbosity=2, config_dict="TPOT sparse", random_state=RANDOMSTATE, cv=CV, periodic_checkpoint_folder=DATADIR)
 
 logger.info("Initialising T-POT with the following parameters: %s", tpot)
 logger.info("Running TPOT...")
@@ -144,8 +151,6 @@ logger.info("Running TPOT...")
 tpot.fit(X_train, y_train)
 
 logger.info("Writing pipeline to tpot_pipeline.py")
-tpot.export('/mnt/data/tpot_pipeline.py')
+tpot.export(PIPELINEFILE)
 logger.info("...TPOT run completed")
 logger.info("TPOT score: %s", tpot.score(X_test, y_test))
-
-tpot.export('/mnt/data/tpot_pipeline.py')
