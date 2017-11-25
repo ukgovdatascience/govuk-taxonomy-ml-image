@@ -2,7 +2,7 @@ FROM python:3.6.2
 
 MAINTAINER Matthew Upson
 LABEL date="2017-11-25"
-LABEL version="0.1.1"
+LABEL version="0.1.2"
 LABEL description="Image for running TPOT for automated tagging of GOV.UK content"
 
 # Update server and install git 
@@ -27,10 +27,14 @@ ENV DOCKERDATADIR /mnt/data
 
 ENV TPOT_MEMORY /mnt/data
 ENV TPOT_VERBOSITY 3
-ENV TPOT_NUMJOBS -1
 ENV TPOT_TESTSIZE 0.2
 ENV TPOT_CV 5
 ENV TPOT_GENERATIONS 1
 ENV TPOT_POPULATIONSIZE 10
 ENV TPOT_RANDOMSTATE 1337
+ENV TPOT_SUBSAMPLE 1
+
+# Setting this to anything other than 1 causes failure on AWS
+
+ENV TPOT_NUMJOBS 1
 

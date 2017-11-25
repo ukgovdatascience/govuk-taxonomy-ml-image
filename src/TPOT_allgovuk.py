@@ -24,6 +24,7 @@ TPOT_TESTSIZE = float(os.getenv('TPOT_TESTSIZE'))
 TPOT_NUMJOBS = int(os.getenv('TPOT_NUMJOBS'))
 TPOT_VERBOSITY= int(os.getenv('TPOT_VERBOSITY'))
 TPOT_MEMORY = str(os.getenv('TPOT_MEMORY'))
+TPOT_SUBSAMPLE = float(os.getenv('TPOT_SUBSAMPLE'))
 
 # file locations
 
@@ -134,8 +135,10 @@ content_taxons.drop(335627, axis=0, inplace=True)
 
 logger.info("Running transformation pipeline")
 
-nlp_pipeline = Pipeline([('vect', CountVectorizer()),
-                    ('tfidf', TfidfTransformer()),])
+nlp_pipeline = Pipeline([
+			 ('vect', CountVectorizer()),
+			 ('tfidf', TfidfTransformer()),
+			])
 
 X = nlp_pipeline.fit_transform(content_taxons['combined_text'])
 
@@ -145,7 +148,7 @@ logger.info("Creating train/test split")
 X_train, X_test, y_train, y_test = train_test_split(
     X, content_taxons['level2taxoncat'], test_size = TPOT_TESTSIZE, random_state=1337)
 
-tpot = TPOTClassifier(generations=TPOT_GENERATIONS, population_size=TPOT_POPULATIONSIZE, verbosity=TPOT_VERBOSITY, config_dict="TPOT sparse", random_state=TPOT_RANDOMSTATE, cv=TPOT_CV, periodic_checkpoint_folder=DOCKERDATADIR, n_jobs=TPOT_NUMJOBS, memory=TPOT_MEMORY)
+tpot = TPOTClassifier(generations=TPOT_GENERATIONS, population_size=TPOT_POPULATIONSIZE, verbosity=TPOT_VERBOSITY, config_dict="TPOT sparse", cv=TPOT_CV, periodic_checkpoint_folder=DOCKERDATADIR, memory=TPOT_MEMORY, subsample=TPOT_SUBSAMPLE, n_jobs=TPOT_NUMJOBS, random_state=TPOT_RANDOMSTATE)
 
 logger.info("Initialising T-POT with the following parameters: %s", tpot)
 logger.info("Running TPOT...")
