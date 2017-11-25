@@ -143,9 +143,9 @@ logger.info("Output dataset X has shape: %s", X.shape)
 logger.info("Creating train/test split")
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, content_taxons['level2taxoncat'], test_size = TPOT_TESTSIZE, random_state=1337)
+    X, content_taxons['level2taxoncat'], test_size = 0.2, random_state=1337)
 
-tpot = TPOTClassifier(generations=TPOT_GENERATIONS, population_size=TPOT_POPULATIONSIZE, verbosity=TPOT_VERBOSITY, config_dict="TPOT sparse", random_state=TPOT_RANDOMSTATE, cv=TPOT_CV, periodic_checkpoint_folder=DATADIR, n_jobs=TPOT_NUMJOBS, memory=TPOT_MEMORY)
+tpot = TPOTClassifier(generations=TPOT_GENERATIONS, population_size=TPOT_POPULATIONSIZE, verbosity=TPOT_VERBOSITY, config_dict="TPOT sparse", random_state=TPOT_RANDOMSTATE, cv=TPOT_CV, periodic_checkpoint_folder=DOCKERDATADIR, n_jobs=TPOT_NUMJOBS, memory=TPOT_MEMORY)
 
 logger.info("Initialising T-POT with the following parameters: %s", tpot)
 logger.info("Running TPOT...")
