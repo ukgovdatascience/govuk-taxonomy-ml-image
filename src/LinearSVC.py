@@ -27,7 +27,8 @@ PIPELINEFILE = os.path.join(DOCKERDATADIR, NOW)
 
 # Setup pipeline logging
 
-logging.config.fileConfig('./logging.conf')
+LOGGING_CONFIG = os.getenv('LOGGING_CONFIG')
+logging.config.fileConfig(LOGGING_CONFIG)
 logger = logging.getLogger('pipeline')
 
 TAXONS = os.path.join(DOCKERDATADIR, 'clean_taxons.csv')
@@ -125,30 +126,36 @@ content_taxons['level2taxoncat'] = content_taxons['level2taxon'].astype('categor
 
 # Drop bizarre anomalous row
 
-content_taxons.drop(335627, axis=0, inplace=True)
+content_taxons.drop(content_taxons['combined_text'].isnull().index, axis=0, inplace=True)
+
+logger.info('Nan rows: %s', content_taxons['combined_text'].isnull().index)
 
 logger.info("Running transformation pipeline")
 
 nlp_pipeline = Pipeline([
 	   ('vect', CountVectorizer()),
 	   ('tfidf', TfidfTransformer()),
-    ('selectperc', SelectPercentile(score_func=f_classif, percentile=2)),
-    ('svc', LinearSVC(C=10.0, dual=False, loss="squared_hinge", penalty="l2", tol=0.01)),
     ])
 
 X = nlp_pipeline.fit_transform(content_taxons['combined_text'])
 
-logger.info("Output dataset X has shape: %s", X.shape)
+logger.info("Output dataset X has shape: %s", content_taxons.shape)
+logger.info("Output dataset X has columns: %s", content_taxons.columns)
 logger.info("Creating train/test split")
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, content_taxons['level2taxoncat'], test_size=TPOT_TESTSIZE, random_state=1337)
 
+exported_pipeline = make_pipeline(
+    SelectPercentile(score_func=f_classif, percentile=2),
+    LinearSVC(C=10.0, dual=False, loss="squared_hinge", penalty="l2", tol=0.01)
+)
+
 logger.info("Initialising LinearSVC pipelinePOT with parameters: %s", nlp_pipeline)
 logger.info("Running pipeline...")
 
-nlp_pipeline.fit(X_train, y_train)
+exported_pipeline.fit_transform(X_train, y_train)
 
-logger.info("TPOT score: %s", nlp_pipeline.score(X_test, y_test))
+logger.info("TPOT score: %s", exported_pipeline.score(X_test, y_test))
 
 # Score on the training set was:0.7925764732068796
