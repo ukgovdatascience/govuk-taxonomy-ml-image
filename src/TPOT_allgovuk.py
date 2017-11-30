@@ -26,6 +26,7 @@ TPOT_NUMJOBS = int(os.getenv('TPOT_NUMJOBS'))
 TPOT_VERBOSITY= int(os.getenv('TPOT_VERBOSITY'))
 TPOT_MEMORY = str(os.getenv('TPOT_MEMORY'))
 TPOT_SUBSAMPLE = float(os.getenv('TPOT_SUBSAMPLE'))
+TPOT_WARMSTART = bool(os.getenv('TPOT_WARMSTART'))
 
 # file locations
 
@@ -150,7 +151,7 @@ logger.info("Creating train/test split")
 X_train, X_test, y_train, y_test = train_test_split(
     X, content_taxons['level2taxoncat'], test_size = TPOT_TESTSIZE, random_state=1337)
 
-tpot = TPOTClassifier(generations=TPOT_GENERATIONS, population_size=TPOT_POPULATIONSIZE, verbosity=TPOT_VERBOSITY, config_dict="TPOT sparse", cv=TPOT_CV, periodic_checkpoint_folder=DOCKERDATADIR, memory=TPOT_MEMORY, subsample=TPOT_SUBSAMPLE, n_jobs=TPOT_NUMJOBS, random_state=TPOT_RANDOMSTATE)
+tpot = TPOTClassifier(generations=TPOT_GENERATIONS, population_size=TPOT_POPULATIONSIZE, verbosity=TPOT_VERBOSITY, config_dict="TPOT sparse", cv=TPOT_CV, periodic_checkpoint_folder=DOCKERDATADIR, memory=TPOT_MEMORY, subsample=TPOT_SUBSAMPLE, n_jobs=TPOT_NUMJOBS, random_state=TPOT_RANDOMSTATE, warm_start=TPOT_WARMSTART)
 
 logger.info("Initialising T-POT with the following parameters: %s", tpot)
 logger.info("Running TPOT...")
